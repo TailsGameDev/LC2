@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SignIn : MonoBehaviour
 {
+
     string userEmail;
     string userPassword;
 
@@ -41,6 +42,7 @@ public class SignIn : MonoBehaviour
     private void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Logged in!!");
+        PlayerData.instance.SetPlayerID(result.PlayFabId);
     }
 
 }
