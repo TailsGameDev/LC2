@@ -8,45 +8,52 @@ public class UserDataManager : PlayFabIDConsumer
 
     UserData userData;
 
-    UserDataNetworkPuller playerDataNetworkPuller;
-    UserDataNetworkPusher playerDataNetworkPusher;
+    UserDataNetworkPusher userDataNetworkPusher;
+
+    UserDataNetworkPuller userDataNetworkPuller;
+
+    public delegate void OnUserDataPulledFromServer();
+    public event OnUserDataPulledFromServer onUserDataPulledFromServer;
 
     public UserDataManager()
     {
-
         userData = new UserData();
-        playerDataNetworkPuller = new UserDataNetworkPuller();
-        playerDataNetworkPusher = new UserDataNetworkPusher();
+        userDataNetworkPusher = new UserDataNetworkPusher();
+        userDataNetworkPuller = new UserDataNetworkPuller(this);
     }
 
-    public string GetDataLocally(string key)
+    public string GetPieceOfDataLocally(string key)
     {
         return userData.GetData(key);
     }
 
-    public void StoreDataLocally(string key, string value)
+
+    public void StorePieceOfDataLocally(string key, string value)
     {
         userData.Store(key, value);
     }
    
-    public void SaveAllDataOnServer()
+
+    public void PushAllDataToServer()
     {
-        playerDataNetworkPusher.PushUserData(userData);
+        userDataNetworkPusher.PushUserData(userData);
     }
 
-    public void RetreiveAllDataFromServer()
+
+    public void PullUserDataFromServer()
     {
-        Dictionary<string, UserDataRecord> userDataRecords =
-                        playerDataNetworkPuller.GetUserData( base.GetPlayFabId() );
-
-        Dictionary<string, string> data = new Dictionary<string, string>();
-
-        foreach (KeyValuePair<string, UserDataRecord> entry in userDataRecords)
-        {
-            data.Add(entry.Key, entry.Value.ToString());
-        }
-
-        userData.SetData(data);
+        userDataNetworkPuller.PullUserDataFromServer( base.GetPlayFabId() );
     }
-    
+
+    public void PullUserDataFromServerCallback(Dictionary<string, string> data)
+    {
+        SetAllUserDataAndNotify(data);
+    }
+
+    void SetAllUserDataAndNotify(Dictionary<string, string> data)
+    {
+        this.userData.SetData(data);
+        onUserDataPulledFromServer?.Invoke();
+    }
+
 }

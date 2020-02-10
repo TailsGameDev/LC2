@@ -47,7 +47,6 @@ public class UserData
 
     public void SetData(Dictionary<string, string> data)
     {
-        userData.Clear();
         userData = data;
     }
 }

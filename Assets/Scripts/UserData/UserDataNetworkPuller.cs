@@ -2,34 +2,49 @@
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 
 public class UserDataNetworkPuller
 {
 
-    Dictionary<string, UserDataRecord> userData;
+    UserDataManager userDataManager;
 
+    public UserDataNetworkPuller(UserDataManager userDataManager)
+    {
+        this.userDataManager = userDataManager;
+    }
 
-    public Dictionary<string, UserDataRecord> GetUserData( string playFabID )
+    public void PullUserDataFromServer( string playFabId )
     {
         var getUserDataRequest = new GetUserDataRequest
         {
-            PlayFabId = playFabID,
+            PlayFabId = playFabId,
             Keys = null // null means I want all the available keys
         };
 
-        PlayFabClientAPI.GetUserData(getUserDataRequest, OnGetDataSuccess, OnGetDataError);
-
-        return userData;
+        PlayFabClientAPI.GetUserData(getUserDataRequest, PullDataSuccessCallback, PullDataErrorCallback);
     }
 
-
-    private void OnGetDataSuccess(GetUserDataResult result)
+    private void PullDataSuccessCallback(GetUserDataResult result)
     {
-        userData = result.Data;
+        userDataManager.PullUserDataFromServerCallback(
+            ToStringStringDictionary(result.Data)
+        );
     }
 
+    Dictionary<string, string> ToStringStringDictionary(Dictionary<string, UserDataRecord> userData)
+    {
+        Dictionary<string, string> data = new Dictionary<string, string>();
 
-    private void OnGetDataError(PlayFabError obj)
+        foreach (KeyValuePair<string, UserDataRecord> entry in userData)
+        {
+            data.Add(entry.Key, entry.Value.Value);
+        }
+
+        return data;
+    }
+
+    private void PullDataErrorCallback(PlayFabError obj)
     {
         Debug.LogError("GetDataError at UserData class!!");
     }
