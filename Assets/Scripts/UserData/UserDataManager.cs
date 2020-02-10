@@ -3,10 +3,8 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 
-public class UserDataManager
+public class UserDataManager : PlayFabIDConsumer
 {
-
-    static string playFabID;
 
     UserData userData;
 
@@ -15,14 +13,10 @@ public class UserDataManager
 
     public UserDataManager()
     {
+
         userData = new UserData();
         playerDataNetworkPuller = new UserDataNetworkPuller();
         playerDataNetworkPusher = new UserDataNetworkPusher();
-    }
-
-    public static void SetPlayerID(string playerID)
-    {
-        playFabID = playerID;
     }
 
     public string GetDataLocally(string key)
@@ -35,15 +29,15 @@ public class UserDataManager
         userData.Store(key, value);
     }
    
-    void SaveAllDataOnServer()
+    public void SaveAllDataOnServer()
     {
         playerDataNetworkPusher.PushUserData(userData);
     }
 
-    void RetreiveAllDataFromServer()
+    public void RetreiveAllDataFromServer()
     {
         Dictionary<string, UserDataRecord> userDataRecords =
-                        playerDataNetworkPuller.GetUserData(playFabID);
+                        playerDataNetworkPuller.GetUserData( base.GetPlayFabId() );
 
         Dictionary<string, string> data = new Dictionary<string, string>();
 

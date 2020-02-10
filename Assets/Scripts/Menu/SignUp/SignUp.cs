@@ -9,6 +9,12 @@ public class SignUp : MonoBehaviour
 
     [SerializeField] string username;
 
+    public delegate void OnSignUpFailed();
+    public event OnSignUpFailed onSignUpFailed;
+
+    public delegate void OnSignUpSuccess();
+    public event OnSignUpSuccess onSignUpSuccess;
+
     public void Register()
     {
         var request = new RegisterPlayFabUserRequest
@@ -22,8 +28,19 @@ public class SignUp : MonoBehaviour
         print(username);
         print(signIn.GetPassword());
 
-        PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, signIn.OnFailedLoginOrSignUp);
+        PlayFabClientAPI.RegisterPlayFabUser(request, SignUpSuccessCallback, FailedSignUpCallback);
     }
+
+    private void SignUpSuccessCallback(RegisterPlayFabUserResult result)
+    {
+        onSignUpSuccess?.Invoke();
+    }
+
+    private void FailedSignUpCallback(PlayFabError error)
+    {
+        onSignUpFailed?.Invoke();
+    }
+
 
     public void SetUsername(string username)
     {
@@ -39,9 +56,5 @@ public class SignUp : MonoBehaviour
     {
         signIn.SetPassword(text);
     }
-
-    private void OnRegisterSuccess(RegisterPlayFabUserResult result)
-    {
-        Debug.Log("user registered!!");
-    }
+    
 }
