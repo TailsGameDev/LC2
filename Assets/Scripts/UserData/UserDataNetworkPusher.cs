@@ -4,13 +4,13 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 
-public class PlayerDataNetworkPusher
+public class UserDataNetworkPusher
 {
-    public void PushPlayerData(Dictionary<string, string> data)
+    public void PushUserData(UserData data)
     {
         var updateUserDataRequest = new UpdateUserDataRequest()
         {
-            Data = data
+            Data = data.getDataClone()
         };
 
         PlayFabClientAPI.UpdateUserData(updateUserDataRequest,
@@ -22,6 +22,6 @@ public class PlayerDataNetworkPusher
 
     private void OnPushDataError(PlayFabError obj)
     {
-        Debug.LogError("PushDataError at PlayerData class!!");
+        Debug.LogError("PushDataError at UserData class!!");
     }
 }

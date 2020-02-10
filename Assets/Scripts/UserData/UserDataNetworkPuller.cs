@@ -3,13 +3,13 @@ using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
 
-public class PlayerDataNetworkPuller
+public class UserDataNetworkPuller
 {
 
     Dictionary<string, UserDataRecord> userData;
 
 
-    public Dictionary<string, UserDataRecord> GetPlayerData( string playFabID )
+    public Dictionary<string, UserDataRecord> GetUserData( string playFabID )
     {
         var getUserDataRequest = new GetUserDataRequest
         {
@@ -31,6 +31,6 @@ public class PlayerDataNetworkPuller
 
     private void OnGetDataError(PlayFabError obj)
     {
-        Debug.LogError("GetDataError at PlayerData class!!");
+        Debug.LogError("GetDataError at UserData class!!");
     }
 }

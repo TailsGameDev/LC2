@@ -42,7 +42,7 @@ public class SignIn : MonoBehaviour
     private void OnLoginSuccess(LoginResult result)
     {
         Debug.Log("Logged in!!");
-        PlayerData.instance.SetPlayerID(result.PlayFabId);
+        UserDataManager.SetPlayerID(result.PlayFabId);
     }
 
 }
