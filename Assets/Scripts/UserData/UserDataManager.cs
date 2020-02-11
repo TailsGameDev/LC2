@@ -12,6 +12,8 @@ public class UserDataManager : PlayFabIDConsumer
 
     UserDataNetworkPuller userDataNetworkPuller;
 
+    SignIn signIn;
+
     public delegate void OnUserDataPulledFromServer();
     public event OnUserDataPulledFromServer onUserDataPulledFromServer;
 
@@ -42,7 +44,15 @@ public class UserDataManager : PlayFabIDConsumer
 
     public void PullUserDataFromServer()
     {
-        userDataNetworkPuller.PullUserDataFromServer( base.GetPlayFabId() );
+        string playFabId = base.GetPlayFabId();
+
+        if (playFabId == null)
+        {
+            // TODO: fake login
+        } else
+        {
+            userDataNetworkPuller.PullUserDataFromServer(base.GetPlayFabId());
+        }
     }
 
     public void PullUserDataFromServerCallback(Dictionary<string, string> data)

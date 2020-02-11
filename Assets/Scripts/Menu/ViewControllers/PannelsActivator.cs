@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PannelsActivator : MonoBehaviour
 {
-    [SerializeField] SignIn signInManager;
+    [SerializeField] SignInManager signInManager;
 
     [SerializeField] GameObject pannelToSignIn, alreadySignedInPannel;
 

@@ -3,17 +3,22 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System;
 
-public class SignUp : MonoBehaviour
+public class SignUp
 {
-    [SerializeField] SignIn signIn;
+    SignIn signIn;
 
-    [SerializeField] string username;
+    string username;
 
     public delegate void OnSignUpFailed();
     public event OnSignUpFailed onSignUpFailed;
 
     public delegate void OnSignUpSuccess();
     public event OnSignUpSuccess onSignUpSuccess;
+
+    public SignUp()
+    {
+        signIn = new SignIn();
+    }
 
     public void Register()
     {
@@ -23,10 +28,6 @@ public class SignUp : MonoBehaviour
             Username = username,
             Password = signIn.GetPassword()
         };
-
-        print(signIn.GetEmail());
-        print(username);
-        print(signIn.GetPassword());
 
         PlayFabClientAPI.RegisterPlayFabUser(request, SignUpSuccessCallback, FailedSignUpCallback);
     }
@@ -39,6 +40,7 @@ public class SignUp : MonoBehaviour
     private void FailedSignUpCallback(PlayFabError error)
     {
         onSignUpFailed?.Invoke();
+        Debug.Log(error.ErrorMessage);
     }
 
 

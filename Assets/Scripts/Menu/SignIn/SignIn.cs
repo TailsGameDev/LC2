@@ -3,7 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
 
-public class SignIn : MonoBehaviour
+public class SignIn
 {
 
     string userEmail;
