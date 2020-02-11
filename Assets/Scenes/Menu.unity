@@ -1013,6 +1013,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisInputField: {fileID: 570920697}
   nextInputField: {fileID: 941335290}
+  submitButton: {fileID: 0}
 --- !u!1 &581509642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1513,6 +1514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisInputField: {fileID: 666538983}
   nextInputField: {fileID: 674404130}
+  submitButton: {fileID: 0}
 --- !u!1 &674404128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1606,7 +1608,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 674404133}
+        m_MethodName: CallSubmitButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1667,6 +1680,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisInputField: {fileID: 674404130}
   nextInputField: {fileID: 732036101}
+  submitButton: {fileID: 651729648}
 --- !u!1 &716017864
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,7 +2298,18 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 941335293}
+        m_MethodName: CallSubmitButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2345,6 +2370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisInputField: {fileID: 941335290}
   nextInputField: {fileID: 732036101}
+  submitButton: {fileID: 716017866}
 --- !u!1 &1108063577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2730,6 +2756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisInputField: {fileID: 1262127309}
   nextInputField: {fileID: 666538983}
+  submitButton: {fileID: 0}
 --- !u!1 &1279407898
 GameObject:
   m_ObjectHideFlags: 0

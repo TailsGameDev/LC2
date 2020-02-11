@@ -3,60 +3,26 @@ using PlayFab;
 using PlayFab.ClientModels;
 using System;
 
-public class SignUp
+public class SignUp : CredentialsHolder
 {
-    SignIn signIn;
-
-    string username;
-
-    public delegate void OnSignUpFailed();
-    public event OnSignUpFailed onSignUpFailed;
-
-    public delegate void OnSignUpSuccess();
-    public event OnSignUpSuccess onSignUpSuccess;
-
-    public SignUp()
-    {
-        signIn = new SignIn();
-    }
 
     public void Register()
     {
         var request = new RegisterPlayFabUserRequest
         {
-            Email = signIn.GetEmail(),
-            Username = username,
-            Password = signIn.GetPassword()
+            Email = base.userEmail,
+            Username = base.username,
+            Password = base.userPassword
         };
 
-        PlayFabClientAPI.RegisterPlayFabUser(request, SignUpSuccessCallback, FailedSignUpCallback);
+        PlayFabClientAPI.RegisterPlayFabUser(request, SignUpSuccessCallback, CredentialsOperationFailCallback);
     }
+
 
     private void SignUpSuccessCallback(RegisterPlayFabUserResult result)
     {
-        onSignUpSuccess?.Invoke();
+        base.CredentialsOperationSuccessCallback();
     }
 
-    private void FailedSignUpCallback(PlayFabError error)
-    {
-        onSignUpFailed?.Invoke();
-        Debug.Log(error.ErrorMessage);
-    }
-
-
-    public void SetUsername(string username)
-    {
-        this.username = username;
-    }
-
-    public void SetEmail(string text)
-    {
-        signIn.SetEmail(text);
-    }
-
-    public void SetPassword(string text)
-    {
-        signIn.SetPassword(text);
-    }
     
 }

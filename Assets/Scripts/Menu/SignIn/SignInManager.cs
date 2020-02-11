@@ -16,8 +16,8 @@ public class SignInManager : MonoBehaviour
     private void Start()
     {
         signIn = new SignIn();
-        signIn.onSignInFailed += ActivateErrorMessage;
-        signIn.onSignInSuccess += ActivateSuccessMessage;
+        signIn.onCredentialsOperationFailed += ActivateErrorMessage;
+        signIn.onCredentialsOperationSucceed += ActivateSuccessMessage;
     }
 
     void ActivateErrorMessage()

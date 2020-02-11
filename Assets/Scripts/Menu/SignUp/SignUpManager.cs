@@ -18,8 +18,8 @@ public class SignUpManager : MonoBehaviour
     private void Start()
     {
         signUp = new SignUp();
-        signUp.onSignUpFailed += ActivateErrorMessage;
-        signUp.onSignUpSuccess += ActivateSuccessMessage;
+        signUp.onCredentialsOperationFailed += ActivateErrorMessage;
+        signUp.onCredentialsOperationSucceed += ActivateSuccessMessage;
     }
 
     public void StoreSignUpCredentials()
