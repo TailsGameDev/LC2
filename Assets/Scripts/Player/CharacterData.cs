@@ -1,62 +1,51 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+
+//this class asks UserDataManager to pull data from server, and notify when it is successfully pulled.
 
 public class CharacterData : MonoBehaviour
 {
     static UserDataManager userDataManager;
 
-    [SerializeField] Text characterLevelText;
+    public delegate void OnDataPulledFromServer();
+    public event OnDataPulledFromServer onDataPulledFromServer;
 
-    public void LevelUp()
+    void Start()
     {
-        int characterLevel = GetCharacterLevel();
-        characterLevel++;
-        userDataManager.StorePieceOfDataLocally("characterLevel", characterLevel+"");
+        userDataManager = new UserDataManager();
 
-        DisplayCharacterLevel();
+        userDataManager.onUserDataPulledFromServer += DataPulledFromServerCallback;
+
+        userDataManager.PullUserDataFromServer();
     }
+
+
+    public void StorePieceOfDataLocally(string key, string value)
+    {
+        userDataManager.StorePieceOfDataLocally(key, value);
+    }
+
+
+    public string GetPieceOfDataLocally(string key)
+    {
+        return userDataManager.GetPieceOfDataLocally(key);
+    }
+
 
     public void PushDataToServer()
     {
         userDataManager.PushAllDataToServer();
     }
 
-    void Start()
+
+    public void PullDataFromServer()
     {
-        userDataManager = new UserDataManager();
-
-        userDataManager.onUserDataPulledFromServer += DataPulledCallback;
-
         userDataManager.PullUserDataFromServer();
     }
 
-    void DataPulledCallback()
+
+    void DataPulledFromServerCallback()
     {
-        DisplayCharacterLevel();
-        userDataManager.StorePieceOfDataLocally("characterLevel", GetCharacterLevel().ToString());
-    }
-
-    void DisplayCharacterLevel()
-    {
-        characterLevelText.text = "lvl: " + GetCharacterLevel();
-    }
-
-    int GetCharacterLevel()
-    {
-        string level = userDataManager.GetPieceOfDataLocally("characterLevel");
-
-        int characterLevel;
-
-        if (level == "dataNotFound")
-        {
-            characterLevel = 1;
-        } else
-        {
-            characterLevel = int.Parse(level);
-        }
-        return characterLevel;
+        onDataPulledFromServer();
     }
 
 }
