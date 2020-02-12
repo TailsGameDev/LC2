@@ -2,6 +2,7 @@
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using System;
 
 public class UserDataManager : PlayFabIDConsumer
 {
@@ -12,10 +13,9 @@ public class UserDataManager : PlayFabIDConsumer
 
     UserDataNetworkPuller userDataNetworkPuller;
 
-    SignIn signIn;
-
     public delegate void OnUserDataPulledFromServer();
     public event OnUserDataPulledFromServer onUserDataPulledFromServer;
+
 
     public UserDataManager()
     {
@@ -48,11 +48,20 @@ public class UserDataManager : PlayFabIDConsumer
 
         if (playFabId == null)
         {
-            // TODO: fake login
+            MakeDefaultLogin();
         } else
         {
             userDataNetworkPuller.PullUserDataFromServer(base.GetPlayFabId());
         }
+    }
+
+    void MakeDefaultLogin()
+    {
+        SignIn signIn = new SignIn();
+        signIn.SetEmail("default@user.com");
+        signIn.SetPassword("default");
+        signIn.onCredentialsOperationSucceed += PullUserDataFromServer;
+        signIn.Login();
     }
 
     public void PullUserDataFromServerCallback(Dictionary<string, string> data)

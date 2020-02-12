@@ -6,8 +6,8 @@ public class SignInManager : MonoBehaviour
 {
     SignIn signIn;
 
-    [SerializeField] Text emailSignIn;
-    [SerializeField] Text passwordSignIn;
+    [SerializeField] InputField emailSignIn;
+    [SerializeField] InputField passwordSignIn;
 
     [SerializeField] Text errorMessage;
     [SerializeField] Text successMessage;

@@ -7,9 +7,9 @@ public class SignUpManager : MonoBehaviour
 {
     SignUp signUp;
 
-    [SerializeField] Text emailSignUp;
-    [SerializeField] Text usernameSignUp;
-    [SerializeField] Text passwordSignUp;
+    [SerializeField] InputField usernameSignUp;
+    [SerializeField] InputField emailSignUp;
+    [SerializeField] InputField passwordSignUp;
 
     [SerializeField] Text errorMessage;
     [SerializeField] Text successMessage;
