@@ -15,7 +15,7 @@ public class PlayerWalk : MonoBehaviour
 
     public void Walk(bool w, bool s, bool a, bool d)
     {
-        if (PlayerInput.IsJustOneMovementKeyPressed())
+        if (InputInfo.IsJustOneMovementKeyPressed())
         {
             Vector2 direction = directionCalculator.CalculateDirection(w, s, a, d);
 

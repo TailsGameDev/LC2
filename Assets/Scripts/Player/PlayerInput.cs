@@ -7,50 +7,40 @@ public class PlayerInput : MonoBehaviour
 
     [SerializeField] PlayerWalk playerWalk;
     [SerializeField] PlayerAnimationManager playerAnim;
+    [SerializeField] PlayerAttack playerAttack;
 
-    KeyCode lastMovementKeyPressed;
+    KeyCode previousLastMovementKeyPressed;
 
-    bool w, s, a, d;
-
-    public static bool IsJustOneMovementKeyPressed()
-    {
-        bool w = Input.GetKey("w");
-        bool s = Input.GetKey("s");
-        bool a = Input.GetKey("a");
-        bool d = Input.GetKey("d");
-
-        bool vertical = w ^ s;
-        bool horizontal = a ^ d;
-        bool isSingleKey = vertical ^ horizontal;
-
-        return isSingleKey;
-    }
 
     void Update()
     {
-        w = Input.GetKey("w");
-        s = Input.GetKey("s");
-        a = Input.GetKey("a");
-        d = Input.GetKey("d");
+        InputInfo inputInfo = new InputInfo(previousLastMovementKeyPressed);
 
-        playerWalk.Walk(w, s, a, d);
-        playerAnim.AnimateWalk(w, s, a, d);
+        ManageWalk(inputInfo);
+        ManageAnimations(inputInfo);
+        ManageAttacks(inputInfo);
+
+        previousLastMovementKeyPressed = inputInfo.GetLastMovementKeyPressed();
     }
 
-    void StoreLastMovementKeyPressed()
+
+    void ManageWalk(InputInfo inputInfo)
     {
-        if (w)
+        playerWalk.Walk(inputInfo.GetW(), inputInfo.GetS(), inputInfo.GetA(), inputInfo.GetD());
+    }
+
+    void ManageAnimations(InputInfo inputInfo)
+    {
+        playerAnim.AnimateWalk(inputInfo.GetW(), inputInfo.GetS(), inputInfo.GetA(), inputInfo.GetD());
+        playerAnim.AnimateAttack(inputInfo.GetAttackInput());
+    }
+
+    void ManageAttacks(InputInfo inputInfo)
+    {
+        if (inputInfo.GetAttackInput())
         {
-            lastMovementKeyPressed = KeyCode.W;
-        } else if (s)
-        {
-            lastMovementKeyPressed = KeyCode.S;
-        } else if (a)
-        {
-            lastMovementKeyPressed = KeyCode.A;
-        } else if (d)
-        {
-            lastMovementKeyPressed = KeyCode.D;
+            playerAttack.Attack(inputInfo.GetLastMovementKeyPressed());
         }
     }
+
 }
