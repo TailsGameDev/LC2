@@ -23,5 +23,7 @@ public class PlayerAnimationManager : MonoBehaviour
         animator.SetBool("isWalkingDown", s);
         animator.SetBool("isWalkingLeft", a);
         animator.SetBool("isWalkingRight", d);
+
+        animator.SetBool("isWalking", w || s || a || d);
     }
 }

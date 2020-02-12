@@ -8,6 +8,10 @@ public class PlayerInput : MonoBehaviour
     [SerializeField] PlayerWalk playerWalk;
     [SerializeField] PlayerAnimationManager playerAnim;
 
+    KeyCode lastMovementKeyPressed;
+
+    bool w, s, a, d;
+
     public static bool IsJustOneMovementKeyPressed()
     {
         bool w = Input.GetKey("w");
@@ -24,13 +28,29 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
-        bool w = Input.GetKey("w");
-        bool s = Input.GetKey("s");
-        bool a = Input.GetKey("a");
-        bool d = Input.GetKey("d");
+        w = Input.GetKey("w");
+        s = Input.GetKey("s");
+        a = Input.GetKey("a");
+        d = Input.GetKey("d");
 
         playerWalk.Walk(w, s, a, d);
         playerAnim.AnimateWalk(w, s, a, d);
     }
 
+    void StoreLastMovementKeyPressed()
+    {
+        if (w)
+        {
+            lastMovementKeyPressed = KeyCode.W;
+        } else if (s)
+        {
+            lastMovementKeyPressed = KeyCode.S;
+        } else if (a)
+        {
+            lastMovementKeyPressed = KeyCode.A;
+        } else if (d)
+        {
+            lastMovementKeyPressed = KeyCode.D;
+        }
+    }
 }
