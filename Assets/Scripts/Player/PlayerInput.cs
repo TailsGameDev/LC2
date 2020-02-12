@@ -11,6 +11,10 @@ public class PlayerInput : MonoBehaviour
 
     KeyCode previousLastMovementKeyPressed;
 
+    private void Start()
+    { //player starts looking to down, like if had pressed S key
+        previousLastMovementKeyPressed = KeyCode.S;
+    }
 
     void Update()
     {
