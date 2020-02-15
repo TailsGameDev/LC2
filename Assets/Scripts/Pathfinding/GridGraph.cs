@@ -28,11 +28,12 @@ public class GridGraph
 {
     public List<List<Edge>> nodes = new List<List<Edge>>();
 
-    int width, height;
+    protected int width, height;
 
-    int defaultweight = 1;
+    protected int defaultweight = 1;
 
-    int currentNode;
+    protected int currentNode;
+
 
     public List<int> GetNeighbors(int v)
     {
@@ -56,6 +57,11 @@ public class GridGraph
         return nodes.Count;
     }
 
+    protected GridGraph()
+    {
+
+    }
+
     public GridGraph(int width, int heigth)
     {
         this.width = width;
@@ -64,36 +70,36 @@ public class GridGraph
         MountGraph();
     }
 
-    void MountGraph()
+    protected void MountGraph()
     {
         InitializeWithEmptyLists();
         PopulateLists();
     }
 
-    void InitializeWithEmptyLists()
+    protected void InitializeWithEmptyLists()
     {
-        //zero is a sentinel. Consider the matrix as starting at 1
-        for (int i = 0; i <= width; i++)
+        //zero is a sentinel.
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j <= height; j++)
+            for (int j = 0; j < height; j++)
             {
                 nodes.Add(new List<Edge>());
             }
         }
     }
 
-    void PopulateLists()
+    protected void PopulateLists()
     {
-        for (int i = 1; i <= width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 1; j <= height; j++)
+            for (int j = 0; j < height; j++)
             {
                 ConfigureEdges(i, j);
             }
         }
     }
 
-    void ConfigureEdges(int i, int j)
+    protected void ConfigureEdges(int i, int j)
     {
         currentNode = CalculateCurrentNode(i, j);
 
@@ -111,7 +117,7 @@ public class GridGraph
         return i * width + j;
     }
 
-    void AddToGraph(int destination, bool condition)
+    protected void AddToGraph(int destination, bool condition)
     {
         if (condition)
         {
@@ -119,44 +125,44 @@ public class GridGraph
         }
     }
 
-    int GetLeft(int node)
+    protected int GetLeft(int node)
     {
         return node - 1;
     }
 
-    int GetRight(int node)
+    protected int GetRight(int node)
     {
         return node + 1;
     }
 
-    int GetUp(int node)
+    protected int GetUp(int node)
     {
         return node - width;
     }
 
-    int GetDown(int node)
+    protected int GetDown(int node)
     {
         return node + width;
     }
 
-    bool JHasLeft(int j)
+    protected bool JHasLeft(int j)
     {
-        return j > 1;
+        return j > 0;
     }
 
-    bool JHasRight(int j)
+    protected bool JHasRight(int j)
     {
-        return j < width;
+        return j < width-1;
     }
 
-    bool IHasUp(int i)
+    protected bool IHasUp(int i)
     {
-        return i > 1;
+        return i > 0;
     }
 
-    bool IHasDown(int i)
+    protected bool IHasDown(int i)
     {
-        return i < height;
+        return i < height-1;
     }
 
 }

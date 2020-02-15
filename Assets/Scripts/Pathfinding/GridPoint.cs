@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GridPoint : MonoBehaviour
 {
+    public int id;
     [SerializeField] Collider2D col;
 
     public bool PointIsOverWalkableSurface()

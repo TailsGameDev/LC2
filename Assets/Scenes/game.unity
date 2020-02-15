@@ -883,7 +883,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 19.91
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -943,6 +943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c200e5de5dc2a408d3c7f881c3ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   col: {fileID: 531972937}
 --- !u!4 &531972936
 Transform:
@@ -2607,8 +2608,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPointPrototype: {fileID: 4452564117376992110, guid: c655dcb1bc9b5384fba3f5183cfa88f3,
     type: 3}
-  width: 10
-  height: 10
+  width: 20
+  height: 20
 --- !u!114 &2003426396
 MonoBehaviour:
   m_ObjectHideFlags: 0

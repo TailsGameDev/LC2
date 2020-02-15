@@ -10,7 +10,7 @@ public class Dijkstra
 
     protected Dijkstra()
     {
-        initialNode = 5;
+        initialNode = 0;
     }
 
     public Dijkstra(int initialNode)
@@ -25,7 +25,7 @@ public class Dijkstra
         int[] A = new int[size];
         bool[] C = new bool[size];
 
-        for (int v = 1; v < gridGraph.GetNodesQuantity(); v++)
+        for (int v = 0; v < gridGraph.GetNodesQuantity(); v++)
         {
             D[v] = infinity;
             C[v] = false;
@@ -72,7 +72,7 @@ public class Dijkstra
     {
         float minValue = infinity;
         int minIndex = -1;
-        for (int i = 1; i < C.Length; i++)
+        for (int i = 0; i < C.Length; i++)
         {
             if (D[i] < minValue && !C[i])
             {
@@ -89,6 +89,7 @@ public class Dijkstra
         int node = destinationNode;
         while (node != initialNode)
         {
+            Debug.Log("node: "+node);
             path.Insert(0, A[node]);
             node = A[node];
         }

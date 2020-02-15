@@ -16,16 +16,30 @@ public class Pathfinding : MonoBehaviour
 
     void Start()
     {
-        Dijkstra dijkstra = new Dijkstra( grid.GetWidth() * grid.GetHeight() / 2 );
+
+        int i = grid.GetHeight() / 2;
+        int j = grid.GetWidth() / 2;
+        Dijkstra dijkstra = new Dijkstra( i*grid.GetWidth() +j );
 
         gridGraph = new GridGraph( grid.GetWidth(), grid.GetHeight() );
 
         Vector3 deltaPos = target.transform.position - transform.position;
 
-        int x = Mathf.RoundToInt(deltaPos.x);
-        int y = Mathf.RoundToInt(deltaPos.y);
+        int targetJ = j + Mathf.RoundToInt(deltaPos.x);
+        int targetI = i - Mathf.RoundToInt(deltaPos.y);
 
-        path = dijkstra.FindPath(gridGraph.CalculateCurrentNode(x,y), gridGraph);
+        path = dijkstra.FindPath(gridGraph.CalculateCurrentNode(targetI, targetJ), gridGraph);
+        StartCoroutine(Go());
+    }
+
+    IEnumerator Go()
+    {
+        while (path.Count > 0)
+        {
+            transform.position = grid.GetGridPoint(path[0]).transform.position;
+            yield return new WaitForSeconds(0.5f);
+            path.RemoveAt(0);
+        }
     }
 
 }

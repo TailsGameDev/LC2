@@ -4,25 +4,34 @@ using UnityEngine;
 
 public class PathfindingGrid : MonoBehaviour
 {
+
     [SerializeField] GridPoint gridPointPrototype;
 
+
     [SerializeField] int width, height;
+
+    GameObject gridGameObject;
     GridPoint[] gridPoints;
 
     void Awake()
     {
-        gridPoints = new GridPoint[(width+1) * (height+1)];
+        gridGameObject = new GameObject();
+        gridGameObject.transform.position = transform.position;
 
-        for (int i = 1; i <= width; i++)
+        gridPoints = new GridPoint[width * height];
+
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 1; j <= height; j++)
+            for (int j = 0; j < height; j++)
             {
                 Vector3 offset = new Vector3(width/2, height/2, 0);
-                Vector3 positionInArray = new Vector3(i, j, 0);
+                Vector3 positionInArray = new Vector3(j, height-i, 0);
                 Vector3 position = transform.position + positionInArray - offset;
                 Quaternion rotation = Quaternion.identity;
                 gridPoints[i*width + j] = Instantiate(gridPointPrototype.gameObject, position, rotation)
                                     .GetComponent<GridPoint>();
+                gridPoints[i * width + j].id = i * width + j;
+                gridPoints[i * width + j].transform.parent = gridGameObject.transform;
             }
         }
     }
@@ -35,5 +44,10 @@ public class PathfindingGrid : MonoBehaviour
     public int GetHeight()
     {
         return height;
+    }
+    
+    public GridPoint GetGridPoint(int index)
+    {
+        return gridPoints[index];
     }
 }
