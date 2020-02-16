@@ -4,37 +4,44 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
 {
-    Dijkstra dijkstra;
-
     [SerializeField] PathfindingGrid pathfindingGrid;
-
-    GridGraph gridGraph;
-
-    [SerializeField] List<int> path;
-
-    [SerializeField] Transform target;
 
     [SerializeField] int width, height;
 
+    GridGraph gridGraph;
+
+    Dijkstra algorithm;
+
+    [SerializeField] Transform target;
+
+    [SerializeField] List<int> path;
 
     void Start()
     {
-        GridGraph gridGraph = Prepare();
+        InitializeObjects();
 
-        FindPathAndGo(gridGraph);
+        PursueTarget();
     }
 
-    GridGraph Prepare()
+    void InitializeObjects()
+    {
+        SetupPathfindingGrid();
+
+        SetUpGridGraph();
+
+        algorithm = new Dijkstra();      
+    }
+
+    void SetupPathfindingGrid()
     {
         pathfindingGrid.Clear();
         pathfindingGrid.Create(width, height);
+    }
 
+    void SetUpGridGraph()
+    {
         gridGraph = new GridGraph(width, height);
         gridGraph.SetInitialNode(GetInitialI(), GetInitialJ());
-
-        dijkstra = new Dijkstra();
-
-        return gridGraph;       
     }
 
     int GetInitialI()
@@ -47,62 +54,72 @@ public class Pathfinding : MonoBehaviour
         return width / 2;
     }
 
-    void FindPathAndGo(GridGraph gridGraph) {
-        // TODO: deal with out of range target
+    void PursueTarget() {
 
-        Vector3 deltaPos = target.transform.position - transform.position;
-        Vector3 clampedDeltaPos = ClampDeltaPos(deltaPos);
+        Vector3 deltaPosition = CalculateDeltaPosition();
 
-        int targetJ = GetInitialJ() + (int)clampedDeltaPos.x;//Mathf.RoundToInt(deltaPos.x);
-        int targetI = GetInitialI() - (int)clampedDeltaPos.y;//Mathf.RoundToInt(deltaPos.y);
+        int targetI, targetJ;
+        CalculateIJGridIndexes(deltaPosition, out targetI, out targetJ);
 
         gridGraph.SetDestinationNode(targetI, targetJ);
 
-        path = dijkstra.FindPath(gridGraph);
+        path = algorithm.FindPath(gridGraph);
 
-        StartCoroutine(Go());
+        StartCoroutine(MoveAlongPathThenRestart());
     }
 
-    IEnumerator Go()
+    Vector3 CalculateDeltaPosition()
     {
-        if (path.Count == 0)
-        {
-            yield return new WaitForSeconds(1f);
-        }
-
-        while (path.Count > 0)
-        {
-            transform.position = pathfindingGrid.GetGridPoint(path[0]).transform.position;
-            yield return new WaitForSeconds(0.5f);
-            path.RemoveAt(0);
-        }
-
-        Start();
+        Vector3 actualDeltaPos = target.transform.position - transform.position;
+        Vector3 insideBoundsDeltaPos = ClampDeltaPos(actualDeltaPos);
+        return insideBoundsDeltaPos;
     }
 
     Vector3 ClampDeltaPos(Vector3 deltaPos)
     {
-        float clampedX = deltaPos.x;
-        if (deltaPos.x > width / 2)
-        {
-            clampedX = width / 2 -1; //-1 and +1 to avoid out of bounds bugs
-        }
-        else if (deltaPos.x < -width / 2)
-        {
-            clampedX = -width / 2 +1;
-        }
+        Vector3 clamped = Vector3.zero;
 
-        float clampedY = deltaPos.y;
-        if (deltaPos.y > height / 2)
-        {
-            clampedY = height / 2 -1;
-        }
-        else if (deltaPos.y < -height / 2)
-        {
-            clampedY = -height / 2 +1;
-        }
+        int minimum = (-width / 2);
+        int minimumReallyInsideBounds = minimum + 1;
 
-        return new Vector3(clampedX, clampedY, 0);
+        int maximum = (width / 2);
+        int maximumReallyInsideBounds = maximum - 1;
+
+        clamped.x = Mathf.Clamp(deltaPos.x, minimumReallyInsideBounds, maximumReallyInsideBounds);
+        clamped.y = Mathf.Clamp(deltaPos.y, minimumReallyInsideBounds, maximumReallyInsideBounds);
+
+        return clamped;
     }
 
+    //like a matrix, J grows from left to right, and I grows from top to bottom
+    void CalculateIJGridIndexes(Vector3 deltaPosition, out int targetI, out int targetJ)
+    {
+        targetJ = GetInitialJ() + (int)deltaPosition.x;
+        targetI = GetInitialI() - (int)deltaPosition.y;
+    }
+
+    IEnumerator MoveAlongPathThenRestart()
+    {
+
+        while ( ThereIsAPathToTheTarget() )
+        {
+            MoveToNextPoint();
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        Start();
+    }
+
+    bool ThereIsAPathToTheTarget()
+    {
+        return path.Count > 0;
+    }
+
+    void MoveToNextPoint()
+    {
+        transform.position = pathfindingGrid.GetGridPoint(path[0]).transform.position;
+        path.RemoveAt(0);
+    }
 }
