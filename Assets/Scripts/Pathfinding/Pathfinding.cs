@@ -51,11 +51,12 @@ public class Pathfinding : MonoBehaviour
         // TODO: deal with out of range target
 
         Vector3 deltaPos = target.transform.position - transform.position;
+        Vector3 clampedDeltaPos = ClampDeltaPos(deltaPos);
 
-        int targetJ = GetInitialI() + Mathf.RoundToInt(deltaPos.x);
-        int targetI = GetInitialJ() - Mathf.RoundToInt(deltaPos.y);
+        int targetJ = GetInitialJ() + (int)clampedDeltaPos.x;//Mathf.RoundToInt(deltaPos.x);
+        int targetI = GetInitialI() - (int)clampedDeltaPos.y;//Mathf.RoundToInt(deltaPos.y);
 
-        gridGraph.SetDestinationNode(gridGraph.CalculateNodeIndex(targetI, targetJ));
+        gridGraph.SetDestinationNode(targetI, targetJ);
 
         path = dijkstra.FindPath(gridGraph);
 
@@ -64,13 +65,44 @@ public class Pathfinding : MonoBehaviour
 
     IEnumerator Go()
     {
+        if (path.Count == 0)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
         while (path.Count > 0)
         {
             transform.position = pathfindingGrid.GetGridPoint(path[0]).transform.position;
             yield return new WaitForSeconds(0.5f);
             path.RemoveAt(0);
         }
+
+        Start();
     }
 
+    Vector3 ClampDeltaPos(Vector3 deltaPos)
+    {
+        float clampedX = deltaPos.x;
+        if (deltaPos.x > width / 2)
+        {
+            clampedX = width / 2 -1; //-1 and +1 to avoid out of bounds bugs
+        }
+        else if (deltaPos.x < -width / 2)
+        {
+            clampedX = -width / 2 +1;
+        }
+
+        float clampedY = deltaPos.y;
+        if (deltaPos.y > height / 2)
+        {
+            clampedY = height / 2 -1;
+        }
+        else if (deltaPos.y < -height / 2)
+        {
+            clampedY = -height / 2 +1;
+        }
+
+        return new Vector3(clampedX, clampedY, 0);
+    }
 
 }

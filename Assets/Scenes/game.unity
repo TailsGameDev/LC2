@@ -1421,7 +1421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &760063250
 Transform:
   m_ObjectHideFlags: 0
@@ -2623,8 +2623,8 @@ MonoBehaviour:
   pathfindingGrid: {fileID: 2003426395}
   path: 
   target: {fileID: 721437407}
-  width: 0
-  height: 0
+  width: 8
+  height: 8
 --- !u!1 &2048858946
 GameObject:
   m_ObjectHideFlags: 0

@@ -172,10 +172,6 @@ public class GridGraph
         return initialNode;
     }
 
-    public void SetInitialNode(int initialNode)
-    {
-        this.initialNode = initialNode;
-    }
     public void SetInitialNode(int i, int j)
     {
         this.initialNode = CalculateNodeIndex(i,j);
@@ -184,11 +180,6 @@ public class GridGraph
     public int GetDestinationNode()
     {
         return destinationNode;
-    }
-
-    public void SetDestinationNode(int destinationNode)
-    {
-        this.destinationNode = destinationNode;
     }
 
     public void SetDestinationNode(int i, int j)
