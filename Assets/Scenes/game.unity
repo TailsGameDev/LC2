@@ -2608,8 +2608,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPointPrototype: {fileID: 4452564117376992110, guid: c655dcb1bc9b5384fba3f5183cfa88f3,
     type: 3}
-  width: 20
-  height: 20
 --- !u!114 &2003426396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2622,9 +2620,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37bd9304a6c0fc34ca0be5fa546d13ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 2003426395}
+  pathfindingGrid: {fileID: 2003426395}
   path: 
   target: {fileID: 721437407}
+  width: 0
+  height: 0
 --- !u!1 &2048858946
 GameObject:
   m_ObjectHideFlags: 0

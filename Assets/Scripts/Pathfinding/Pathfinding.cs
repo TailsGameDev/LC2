@@ -6,7 +6,7 @@ public class Pathfinding : MonoBehaviour
 {
     Dijkstra dijkstra;
 
-    [SerializeField] PathfindingGrid grid;
+    [SerializeField] PathfindingGrid pathfindingGrid;
 
     GridGraph gridGraph;
 
@@ -14,21 +14,51 @@ public class Pathfinding : MonoBehaviour
 
     [SerializeField] Transform target;
 
+    [SerializeField] int width, height;
+
+
     void Start()
     {
+        GridGraph gridGraph = Prepare();
 
-        int i = grid.GetHeight() / 2;
-        int j = grid.GetWidth() / 2;
-        Dijkstra dijkstra = new Dijkstra( i*grid.GetWidth() +j );
+        FindPathAndGo(gridGraph);
+    }
 
-        gridGraph = new GridGraph( grid.GetWidth(), grid.GetHeight() );
+    GridGraph Prepare()
+    {
+        pathfindingGrid.Clear();
+        pathfindingGrid.Create(width, height);
+
+        gridGraph = new GridGraph(width, height);
+        gridGraph.SetInitialNode(GetInitialI(), GetInitialJ());
+
+        dijkstra = new Dijkstra();
+
+        return gridGraph;       
+    }
+
+    int GetInitialI()
+    {
+        return height / 2;
+    }
+
+    int GetInitialJ()
+    {
+        return width / 2;
+    }
+
+    void FindPathAndGo(GridGraph gridGraph) {
+        // TODO: deal with out of range target
 
         Vector3 deltaPos = target.transform.position - transform.position;
 
-        int targetJ = j + Mathf.RoundToInt(deltaPos.x);
-        int targetI = i - Mathf.RoundToInt(deltaPos.y);
+        int targetJ = GetInitialI() + Mathf.RoundToInt(deltaPos.x);
+        int targetI = GetInitialJ() - Mathf.RoundToInt(deltaPos.y);
 
-        path = dijkstra.FindPath(gridGraph.CalculateCurrentNode(targetI, targetJ), gridGraph);
+        gridGraph.SetDestinationNode(gridGraph.CalculateNodeIndex(targetI, targetJ));
+
+        path = dijkstra.FindPath(gridGraph);
+
         StartCoroutine(Go());
     }
 
@@ -36,10 +66,11 @@ public class Pathfinding : MonoBehaviour
     {
         while (path.Count > 0)
         {
-            transform.position = grid.GetGridPoint(path[0]).transform.position;
+            transform.position = pathfindingGrid.GetGridPoint(path[0]).transform.position;
             yield return new WaitForSeconds(0.5f);
             path.RemoveAt(0);
         }
     }
+
 
 }

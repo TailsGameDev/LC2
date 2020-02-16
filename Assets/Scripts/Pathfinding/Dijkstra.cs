@@ -6,19 +6,8 @@ using UnityEngine;
 public class Dijkstra
 {
     protected int infinity = 999999999;
-    protected int initialNode;
 
-    protected Dijkstra()
-    {
-        initialNode = 0;
-    }
-
-    public Dijkstra(int initialNode)
-    {
-        this.initialNode = initialNode;
-    }
-
-    public List<int> FindPath(int destinationNode, GridGraph gridGraph)
+    public List<int> FindPath(GridGraph gridGraph)
     {
         int size = gridGraph.GetNodesQuantity();
         float[] D = new float[size];
@@ -31,7 +20,7 @@ public class Dijkstra
             C[v] = false;
         }
 
-        D[initialNode] = 0;
+        D[ gridGraph.GetInitialNode() ] = 0;
 
         while (ContainsFalse(C))
         {
@@ -51,7 +40,7 @@ public class Dijkstra
             }
         }
 
-        return CalculatePath(initialNode, destinationNode, A);
+        return CalculatePath(gridGraph.GetInitialNode(), gridGraph.GetDestinationNode(), A);
 
     }
 
@@ -89,7 +78,6 @@ public class Dijkstra
         int node = destinationNode;
         while (node != initialNode)
         {
-            Debug.Log("node: "+node);
             path.Insert(0, A[node]);
             node = A[node];
         }

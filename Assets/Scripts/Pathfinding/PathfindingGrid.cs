@@ -7,13 +7,10 @@ public class PathfindingGrid : MonoBehaviour
 
     [SerializeField] GridPoint gridPointPrototype;
 
-
-    [SerializeField] int width, height;
-
     GameObject gridGameObject;
     GridPoint[] gridPoints;
 
-    void Awake()
+    public void Create(int width, int height)
     {
         gridGameObject = new GameObject();
         gridGameObject.transform.position = transform.position;
@@ -36,18 +33,28 @@ public class PathfindingGrid : MonoBehaviour
         }
     }
 
-    public int GetWidth()
+    public void Reposition(Vector3 newPosition)
     {
-        return width;
+        gridGameObject.transform.position = newPosition;
     }
 
-    public int GetHeight()
-    {
-        return height;
-    }
-    
     public GridPoint GetGridPoint(int index)
     {
         return gridPoints[index];
+    }
+
+    public void Clear()
+    {
+        if (gridPoints != null)
+        {
+            foreach (GridPoint gp in gridPoints)
+            {
+                Destroy(gp.gameObject);
+            }
+        }
+        if (gridGameObject)
+        {
+            Destroy(gridGameObject);
+        }
     }
 }

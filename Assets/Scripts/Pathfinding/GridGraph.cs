@@ -32,6 +32,8 @@ public class GridGraph
 
     protected int defaultweight = 1;
 
+    protected int initialNode, destinationNode;
+
     protected int currentNode;
 
 
@@ -101,7 +103,7 @@ public class GridGraph
 
     protected void ConfigureEdges(int i, int j)
     {
-        currentNode = CalculateCurrentNode(i, j);
+        currentNode = CalculateNodeIndex(i, j);
 
         AddToGraph(GetLeft(currentNode), condition: JHasLeft(j));
 
@@ -112,7 +114,7 @@ public class GridGraph
         AddToGraph(GetDown(currentNode), condition: IHasDown(i));
     }
 
-    public int CalculateCurrentNode(int i, int j)
+    public int CalculateNodeIndex(int i, int j)
     {
         return i * width + j;
     }
@@ -165,4 +167,32 @@ public class GridGraph
         return i < height-1;
     }
 
+    public int GetInitialNode()
+    {
+        return initialNode;
+    }
+
+    public void SetInitialNode(int initialNode)
+    {
+        this.initialNode = initialNode;
+    }
+    public void SetInitialNode(int i, int j)
+    {
+        this.initialNode = CalculateNodeIndex(i,j);
+    }
+
+    public int GetDestinationNode()
+    {
+        return destinationNode;
+    }
+
+    public void SetDestinationNode(int destinationNode)
+    {
+        this.destinationNode = destinationNode;
+    }
+
+    public void SetDestinationNode(int i, int j)
+    {
+        this.destinationNode = CalculateNodeIndex(i,j);
+    }
 }
