@@ -2,40 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding : MonoBehaviour
+public class Pathfinding
 {
-    [SerializeField] PathfindingGrid pathfindingGrid;
+    PathfindingGrid pathfindingGrid;
 
-    [SerializeField] int width, height;
+    int width, height;
 
     GridGraph gridGraph;
 
     Dijkstra algorithm;
 
-    [SerializeField] Transform target;
+    List<int> path;
 
-    [SerializeField] List<int> path;
-
-    void Start()
+    public Pathfinding(GameObject owner, int width, int height)
     {
-        InitializeObjects();
+        this.width = width; this.height = height;
 
-        PursueTarget();
-    }
-
-    void InitializeObjects()
-    {
-        SetupPathfindingGrid();
+        pathfindingGrid = owner.AddComponent<PathfindingGrid>();
 
         SetUpGridGraph();
 
-        algorithm = new Dijkstra();      
-    }
-
-    void SetupPathfindingGrid()
-    {
-        pathfindingGrid.Clear();
-        pathfindingGrid.Create(width, height);
+        algorithm = new Dijkstra();
     }
 
     void SetUpGridGraph()
@@ -54,23 +41,31 @@ public class Pathfinding : MonoBehaviour
         return width / 2;
     }
 
-    void PursueTarget() {
+    public List<Vector3> FindPath(Transform target) {
 
-        Vector3 deltaPosition = CalculateDeltaPosition();
+        ResetPathFindingGrid();
+
+        Vector3 deltaPosition = CalculateDeltaPosition(target);
 
         int targetI, targetJ;
         CalculateIJGridIndexes(deltaPosition, out targetI, out targetJ);
 
         gridGraph.SetDestinationNode(targetI, targetJ);
 
-        path = algorithm.FindPath(gridGraph);
+        List<int> path = algorithm.FindPath(gridGraph);
 
-        StartCoroutine(MoveAlongPathThenRestart());
+        return IntToPositionList(path);
     }
 
-    Vector3 CalculateDeltaPosition()
+    void ResetPathFindingGrid()
     {
-        Vector3 actualDeltaPos = target.transform.position - transform.position;
+        pathfindingGrid.Clear();
+        pathfindingGrid.Create(width, height);
+    }
+
+    Vector3 CalculateDeltaPosition(Transform target)
+    {
+        Vector3 actualDeltaPos = target.transform.position - pathfindingGrid.transform.position;
         Vector3 insideBoundsDeltaPos = ClampDeltaPos(actualDeltaPos);
         return insideBoundsDeltaPos;
     }
@@ -98,28 +93,15 @@ public class Pathfinding : MonoBehaviour
         targetI = GetInitialI() - (int)deltaPosition.y;
     }
 
-    IEnumerator MoveAlongPathThenRestart()
+    List<Vector3> IntToPositionList(List<int> intList)
     {
+        List<Vector3> positionsList = new List<Vector3>();
 
-        while ( ThereIsAPathToTheTarget() )
+        for (int i = 0; i < intList.Count; i++)
         {
-            MoveToNextPoint();
-            yield return new WaitForSeconds(0.5f);
+            positionsList.Add(pathfindingGrid.GetGridPoint(intList[i]).transform.position);
         }
 
-        yield return new WaitForSeconds(1f);
-
-        Start();
-    }
-
-    bool ThereIsAPathToTheTarget()
-    {
-        return path.Count > 0;
-    }
-
-    void MoveToNextPoint()
-    {
-        transform.position = pathfindingGrid.GetGridPoint(path[0]).transform.position;
-        path.RemoveAt(0);
+        return positionsList;
     }
 }

@@ -1180,7 +1180,7 @@ GameObject:
   - component: {fileID: 721437412}
   m_Layer: 0
   m_Name: playerNode
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2621,10 +2621,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfindingGrid: {fileID: 2003426395}
-  path: 
-  target: {fileID: 721437407}
   width: 8
   height: 8
+  target: {fileID: 721437407}
+  path: 
 --- !u!1 &2048858946
 GameObject:
   m_ObjectHideFlags: 0

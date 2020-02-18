@@ -10,6 +10,11 @@ public class PathfindingGrid : MonoBehaviour
     GameObject gridGameObject;
     GridPoint[] gridPoints;
 
+    void OnEnable()
+    {
+        gridPointPrototype = Resources.Load<GameObject>("gridPointPrototype").GetComponent<GridPoint>();
+    }
+
     public void Create(int width, int height)
     {
         gridGameObject = new GameObject();
