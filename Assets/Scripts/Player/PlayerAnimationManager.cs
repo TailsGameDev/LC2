@@ -5,10 +5,16 @@ using UnityEngine;
 public class PlayerAnimationManager : MonoBehaviour
 {
     [SerializeField] Animator animator;
+    bool justOneMovementKeyIsPressed = false;
+
+    public void InformIfJustOneMovementKeyIsPressed(bool justOneMovementKeyIsPressed)
+    {
+        this.justOneMovementKeyIsPressed = justOneMovementKeyIsPressed;
+    }
 
     public void AnimateWalk(bool w, bool s, bool a, bool d)
     {
-        if (InputInfo.IsJustOneMovementKeyPressed())
+        if (justOneMovementKeyIsPressed)
         {
             SetWalkParameters(w, s, a, d);
         } else

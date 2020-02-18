@@ -30,11 +30,13 @@ public class PlayerInput : MonoBehaviour
 
     void ManageWalk(InputInfo inputInfo)
     {
+        playerWalk.InformIfJustOneMovementKeyIsPressed(inputInfo.IsJustOneMovementKeyPressed());
         playerWalk.Walk(inputInfo.GetW(), inputInfo.GetS(), inputInfo.GetA(), inputInfo.GetD());
     }
 
     void ManageAnimations(InputInfo inputInfo)
     {
+        playerAnim.InformIfJustOneMovementKeyIsPressed(inputInfo.IsJustOneMovementKeyPressed());
         playerAnim.AnimateWalk(inputInfo.GetW(), inputInfo.GetS(), inputInfo.GetA(), inputInfo.GetD());
         playerAnim.AnimateAttack(inputInfo.GetAttackInput());
     }

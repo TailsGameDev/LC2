@@ -68,19 +68,15 @@ public class InputInfo
         return last;
     }
 
-    public static bool IsJustOneMovementKeyPressed()
+    public bool IsJustOneMovementKeyPressed()
     {
-        bool w = Input.GetKey("w");
-        bool s = Input.GetKey("s");
-        bool a = Input.GetKey("a");
-        bool d = Input.GetKey("d");
-
         bool vertical = w ^ s;
         bool horizontal = a ^ d;
         bool isSingleKey = vertical ^ horizontal;
 
         return isSingleKey;
     }
+
 
     public bool GetW()
     {
