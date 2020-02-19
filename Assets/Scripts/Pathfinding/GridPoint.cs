@@ -7,7 +7,7 @@ public class GridPoint : MonoBehaviour
     public int index;
     [SerializeField] Collider2D col;
 
-    public bool PointIsOverBlockedSurface()
+    public bool PointIsOverObstructedSurface()
     {
         Collider2D[] overlappedColliders = new Collider2D[3];
         ContactFilter2D contactFilter = new ContactFilter2D();

@@ -7,51 +7,85 @@ public class PathfindingGrid : MonoBehaviour
 
     [SerializeField] GridPoint gridPointPrototype;
 
-    GameObject gridGameObject;
+    GameObject gridPointsNode;
     GridPoint[] gridPoints;
-    bool[] isBlocked;
+    bool[] isGridPointObstructedArray;
+    int width, height;
+
+    bool showObstructedGridPointSquares = false;
 
     public void Create(int width, int height)
     {
-        gridGameObject = new GameObject();
-        gridGameObject.transform.position = transform.position;
-
-        gridPoints = new GridPoint[width * height];
-
-        isBlocked = new bool[width * height];
+        InitializeMemberVariables(width, height);
 
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                Vector3 offset = new Vector3(width/2, height/2, 0);
-                Vector3 positionInArray = new Vector3(j, height-i, 0);
-                Vector3 position = transform.position + positionInArray - offset;
-                Quaternion rotation = Quaternion.identity;
-
-                int index = i * width + j;
-
-                GridPoint point = Instantiate(gridPointPrototype.gameObject, position, rotation)
-                                    .GetComponent<GridPoint>();
-
-                gridPoints[index] = point;
-                point.index = index;
-                point.transform.parent = gridGameObject.transform;
-
-                isBlocked[index] = point.PointIsOverBlockedSurface();
-
-                if (isBlocked[index])
-                {
-                    point.GetComponent<SpriteRenderer>().enabled = true;
-                }
-
+                CreateGridPoint(i, j);
             }
         }
     }
 
-    public void Reposition(Vector3 newPosition)
+    void InitializeMemberVariables(int width, int height)
     {
-        gridGameObject.transform.position = newPosition;
+        this.width = width; this.height = height;
+
+        gridPointsNode = new GameObject();
+        gridPointsNode.transform.position = transform.position;
+
+        gridPoints = new GridPoint[width * height];
+
+        isGridPointObstructedArray = new bool[width * height];
+    }
+
+    void CreateGridPoint(int i, int j)
+    {
+        Vector3 pointPosition = CalculateGridPointPosition(i, j);
+
+        GridPoint point = InstantiateGridPoint(pointPosition);
+
+        isGridPointObstructedArray = DoPointConfigurations(point, i, j);
+
+        ShowGridPointSquaresIfWanted(point, isGridPointObstructedArray);
+    }
+
+    Vector3 CalculateGridPointPosition(int i, int j)
+    {
+        Vector3 MiddleToTopLeftCornerOffset = new Vector3(-width / 2, height / 2, 0);
+        Vector3 positionInGridOffset = new Vector3(j, -i, 0);
+        Vector3 position = transform.position + positionInGridOffset + MiddleToTopLeftCornerOffset;
+        return position;
+    }
+
+    GridPoint InstantiateGridPoint(Vector3 position)
+    {
+        Quaternion rotation = Quaternion.identity;
+
+        GameObject p = Instantiate(gridPointPrototype.gameObject, position, rotation);
+
+        return p.GetComponent<GridPoint>();
+    }
+
+    bool[] DoPointConfigurations(GridPoint point, int i, int j)
+    {
+        int index = i * width + j;
+
+        gridPoints[index] = point;
+        point.index = index;
+        point.transform.parent = gridPointsNode.transform;
+
+        isGridPointObstructedArray[index] = point.PointIsOverObstructedSurface();
+
+        return isGridPointObstructedArray;
+    }
+
+    void ShowGridPointSquaresIfWanted(GridPoint point, bool[] isGridPointObstructedArray)
+    {
+        if (showObstructedGridPointSquares && isGridPointObstructedArray[point.index])
+        {
+            point.GetComponent<SpriteRenderer>().enabled = true;
+        }
     }
 
     public GridPoint GetGridPoint(int index)
@@ -68,14 +102,14 @@ public class PathfindingGrid : MonoBehaviour
                 Destroy(gp.gameObject);
             }
         }
-        if (gridGameObject)
+        if (gridPointsNode)
         {
-            Destroy(gridGameObject);
+            Destroy(gridPointsNode);
         }
     }
 
-    public bool[] GetIsBlocked()
+    public bool[] GetIsGridPointObstructedArray()
     {
-        return isBlocked;
+        return isGridPointObstructedArray;
     }
 }

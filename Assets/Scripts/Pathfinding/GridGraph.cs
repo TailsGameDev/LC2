@@ -26,7 +26,7 @@ public class Edge
 
 public class GridGraph
 {
-    public List<List<Edge>> nodes = new List<List<Edge>>();
+    protected List<List<Edge>> nodes = new List<List<Edge>>();
 
     protected int width, height;
 
@@ -51,7 +51,7 @@ public class GridGraph
 
     public int GetWeight(int u, int v)
     {
-        return 1;
+        return defaultweight;
     }
 
     public int GetNodesQuantity()
@@ -80,7 +80,6 @@ public class GridGraph
 
     protected void InitializeWithEmptyLists()
     {
-        //zero is a sentinel.
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
@@ -105,13 +104,13 @@ public class GridGraph
     {
         currentNode = CalculateNodeIndex(i, j);
 
-        AddToGraph(GetLeft(currentNode), condition: JHasLeft(j));
+        AddEdgeToCurrentNode(GetLeft(currentNode), condition: JHasLeft(j));
 
-        AddToGraph(GetRight(currentNode), condition: JHasRight(j));
+        AddEdgeToCurrentNode(GetRight(currentNode), condition: JHasRight(j));
 
-        AddToGraph(GetUp(currentNode), condition: IHasUp(i));
+        AddEdgeToCurrentNode(GetTop(currentNode), condition: IHasTop(i));
 
-        AddToGraph(GetDown(currentNode), condition: IHasDown(i));
+        AddEdgeToCurrentNode(GetBottom(currentNode), condition: IHasBottom(i));
     }
 
     public int CalculateNodeIndex(int i, int j)
@@ -119,7 +118,7 @@ public class GridGraph
         return i * width + j;
     }
 
-    protected void AddToGraph(int destination, bool condition)
+    protected void AddEdgeToCurrentNode(int destination, bool condition)
     {
         if (condition)
         {
@@ -137,12 +136,12 @@ public class GridGraph
         return node + 1;
     }
 
-    protected int GetUp(int node)
+    protected int GetTop(int node)
     {
         return node - width;
     }
 
-    protected int GetDown(int node)
+    protected int GetBottom(int node)
     {
         return node + width;
     }
@@ -157,14 +156,43 @@ public class GridGraph
         return j < width-1;
     }
 
-    protected bool IHasUp(int i)
+    protected bool IHasTop(int i)
     {
         return i > 0;
     }
 
-    protected bool IHasDown(int i)
+    protected bool IHasBottom(int i)
     {
         return i < height-1;
+    }
+
+    public void TryToAjustDestination(bool[] Visited)
+    {
+        int node = GetDestinationNode();
+
+        int i, j;
+        GetIJ(node, out i, out j);
+
+        TryAjust(GetLeft(node), JHasLeft(j), Visited);
+        TryAjust(GetRight(node), JHasRight(j), Visited);
+        TryAjust(GetTop(node), IHasTop(i), Visited);
+        TryAjust(GetBottom(node), IHasBottom(i), Visited);
+    }
+
+    protected bool TryAjust(int newNode, bool hasNeighbor, bool[] Visited)
+    {
+        if (hasNeighbor && !Visited[newNode])
+        {
+            destinationNode = newNode;
+            return true;
+        }
+        return false;
+    }
+
+    protected void GetIJ(int node, out int i, out int j)
+    {
+        i = node / width;
+        j = node - (i * width);
     }
 
     public int GetInitialNode()
@@ -186,4 +214,5 @@ public class GridGraph
     {
         this.destinationNode = CalculateNodeIndex(i,j);
     }
+
 }

@@ -7,39 +7,79 @@ public class Dijkstra
 {
     protected int infinity = 999999999;
 
-    public List<int> FindPath(GridGraph gridGraph, bool[] isBlocked)
-    {
-        int size = gridGraph.GetNodesQuantity();
-        float[] D = new float[size];
-        int[] A = new int[size];
+    protected GridGraph gridGraph;
 
-        for (int v = 0; v < gridGraph.GetNodesQuantity(); v++)
+    protected float[] Distances;
+    protected int[] Ancestors;
+    bool[] Visited;
+
+    public List<int> FindPath(GridGraph gridGraph, bool[] Visited)
+    {
+        Initialize(gridGraph, Visited);
+
+        HandleObstructedDestination();
+
+        if (DestinationStillObstructed())
         {
-            D[v] = infinity;
+            return CouldNotFindAPath();
+        }
+        else
+        {
+            Ancestors = DijkstraLoop();
+
+            return CalculatePath(Ancestors);
+        }
+    }
+
+    void HandleObstructedDestination()
+    {
+        if (Visited[gridGraph.GetDestinationNode()])
+        {
+            gridGraph.TryToAjustDestination(Visited);
+        }
+    }
+
+    bool DestinationStillObstructed()
+    {
+        return Visited[gridGraph.GetDestinationNode()];
+    }
+
+    List<int> CouldNotFindAPath()
+    {
+        return new List<int>();
+    }
+
+    void Initialize(GridGraph gridGraph, bool[] Visited)
+    {
+        this.gridGraph = gridGraph;
+        this.Visited = Visited;
+
+        int size = gridGraph.GetNodesQuantity();
+        Distances = new float[size];
+        Ancestors = new int[size];
+
+        for (int vertex = 0; vertex < size; vertex++)
+        {
+            Distances[vertex] = infinity;
         }
 
-        D[ gridGraph.GetInitialNode() ] = 0;
+        Distances[gridGraph.GetInitialNode()] = 0;
+    }
 
-        while (ContainsFalse(isBlocked))
+    int[] DijkstraLoop()
+    {
+        while (ContainsFalse(Visited))
         {
-            int u = ArgMin(D, isBlocked);
-            isBlocked[u] = true;
+            int nearestUnvisited = GetNearestUnvisitedVertex(Distances, Visited);
+            Visited[nearestUnvisited] = true;
 
-            foreach (int v in gridGraph.GetNeighbors(u))
+            foreach (int neighbor in gridGraph.GetNeighbors(nearestUnvisited))
             {
-                if (!isBlocked[v])
-                {
-                    if (D[v] > D[u] + gridGraph.GetWeight(u, v))
-                    {
-                        D[v] = D[u] + gridGraph.GetWeight(u, v);
-                        A[v] = u;
-                    }
-                }
+                UpdateDistanceAndAncestor(nearestUnvisited, neighbor);
             }
         }
 
-        return CalculatePath(gridGraph.GetInitialNode(), gridGraph.GetDestinationNode(), A);
-
+        return Ancestors;
     }
 
     protected bool ContainsFalse(bool[] boolArray)
@@ -54,45 +94,52 @@ public class Dijkstra
         return false;
     }
 
-
-    protected int CountTrue(bool[] boolArray)
-    {
-        int qty = 0;
-        for (int i = 0; i < boolArray.Length; i++)
-        {
-            if (boolArray[i])
-            {
-                qty++;
-            }
-        }
-        return qty;
-    }
-
-
-    int ArgMin(float[] D, bool[] C)
+    int GetNearestUnvisitedVertex(float[] Distances, bool[] Visited)
     {
         float minValue = infinity;
         int minIndex = -1;
-        for (int i = 0; i < C.Length; i++)
+        for (int i = 0; i < Visited.Length; i++)
         {
-            if (D[i] < minValue && !C[i])
+            if (Distances[i] < minValue && !Visited[i])
             {
-                minValue = D[i];
+                minValue = Distances[i];
                 minIndex = i;
             }
         }
         return minIndex;
     }
 
-    List<int> CalculatePath(int initialNode, int destinationNode, int[]A)
+    void UpdateDistanceAndAncestor(int vertex, int neighbor)
     {
+        if (!Visited[neighbor])
+        {
+            if (Distances[neighbor] > Distances[vertex] + GetDistance(vertex, neighbor))
+            {
+                Distances[neighbor] = Distances[vertex] + GetDistance(vertex, neighbor);
+                Ancestors[neighbor] = vertex;
+            }
+        }
+    }
+
+    protected int GetDistance(int u, int v)
+    {
+        return gridGraph.GetWeight(u, v);
+    }
+
+    List<int> CalculatePath(int[] GetAncestor)
+    {
+        int initialNode = gridGraph.GetInitialNode();
+        int destinationNode = gridGraph.GetDestinationNode();
+
         List<int> path = new List<int>();
+
         int node = destinationNode;
         while (node != initialNode)
         {
-            path.Insert(0, A[node]);
-            node = A[node];
+            path.Insert(0, GetAncestor[node]);
+            node = GetAncestor[node];
         }
+
         return path;
     }
 }

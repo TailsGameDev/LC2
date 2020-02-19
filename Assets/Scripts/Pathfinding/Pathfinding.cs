@@ -16,9 +16,9 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
-        SetUpGridGraph();
-
         algorithm = new Dijkstra();
+
+        SetUpGridGraph();
     }
 
     void SetUpGridGraph()
@@ -39,24 +39,32 @@ public class Pathfinding : MonoBehaviour
 
     public List<Vector3> FindPath(Transform target) {
 
-        ResetPathFindingGrid();
+        pathfindingGrid = ResetPathfindingGrid();
 
-        Vector3 deltaPosition = CalculateDeltaPosition(target);
+        gridGraph = SetDestinationInGridGraph(target);
 
-        int targetI, targetJ;
-        CalculateIJGridIndexes(deltaPosition, out targetI, out targetJ);
-
-        gridGraph.SetDestinationNode(targetI, targetJ);
-
-        List<int> path = algorithm.FindPath(gridGraph, pathfindingGrid.GetIsBlocked());
+        path = algorithm.FindPath(gridGraph, pathfindingGrid.GetIsGridPointObstructedArray());
 
         return IntToPositionList(path);
     }
 
-    void ResetPathFindingGrid()
+    PathfindingGrid ResetPathfindingGrid()
     {
         pathfindingGrid.Clear();
         pathfindingGrid.Create(width, height);
+        return pathfindingGrid;
+    }
+
+    GridGraph SetDestinationInGridGraph(Transform target)
+    {
+        Vector3 deltaPosition = CalculateDeltaPosition(target);
+
+        int targetI, targetJ;
+        CalculateTargetIJGridIndexes(deltaPosition, out targetI, out targetJ);
+
+        gridGraph.SetDestinationNode(targetI, targetJ);
+
+        return gridGraph;
     }
 
     Vector3 CalculateDeltaPosition(Transform target)
@@ -70,20 +78,14 @@ public class Pathfinding : MonoBehaviour
     {
         Vector3 clamped = Vector3.zero;
 
-        int minimum = (-width / 2);
-        int minimumReallyInsideBounds = minimum + 1;
-
-        int maximum = (width / 2);
-        int maximumReallyInsideBounds = maximum - 1;
-
-        clamped.x = Mathf.Clamp(deltaPos.x, minimumReallyInsideBounds, maximumReallyInsideBounds);
-        clamped.y = Mathf.Clamp(deltaPos.y, minimumReallyInsideBounds, maximumReallyInsideBounds);
+        clamped.x = Mathf.Clamp(deltaPos.x, (-width  / 2) +1, (width  / 2) -1);
+        clamped.y = Mathf.Clamp(deltaPos.y, (-height / 2) +1, (height / 2) -1);
 
         return clamped;
     }
 
     //like a matrix, J grows from left to right, and I grows from top to bottom
-    void CalculateIJGridIndexes(Vector3 deltaPosition, out int targetI, out int targetJ)
+    void CalculateTargetIJGridIndexes(Vector3 deltaPosition, out int targetI, out int targetJ)
     {
         targetJ = GetInitialJ() + (int)deltaPosition.x;
         targetI = GetInitialI() - (int)deltaPosition.y;
