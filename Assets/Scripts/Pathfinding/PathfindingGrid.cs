@@ -9,11 +9,7 @@ public class PathfindingGrid : MonoBehaviour
 
     GameObject gridGameObject;
     GridPoint[] gridPoints;
-
-    void OnEnable()
-    {
-        gridPointPrototype = Resources.Load<GameObject>("gridPointPrototype").GetComponent<GridPoint>();
-    }
+    bool[] isBlocked;
 
     public void Create(int width, int height)
     {
@@ -21,6 +17,8 @@ public class PathfindingGrid : MonoBehaviour
         gridGameObject.transform.position = transform.position;
 
         gridPoints = new GridPoint[width * height];
+
+        isBlocked = new bool[width * height];
 
         for (int i = 0; i < width; i++)
         {
@@ -30,10 +28,23 @@ public class PathfindingGrid : MonoBehaviour
                 Vector3 positionInArray = new Vector3(j, height-i, 0);
                 Vector3 position = transform.position + positionInArray - offset;
                 Quaternion rotation = Quaternion.identity;
-                gridPoints[i*width + j] = Instantiate(gridPointPrototype.gameObject, position, rotation)
+
+                int index = i * width + j;
+
+                GridPoint point = Instantiate(gridPointPrototype.gameObject, position, rotation)
                                     .GetComponent<GridPoint>();
-                gridPoints[i * width + j].id = i * width + j;
-                gridPoints[i * width + j].transform.parent = gridGameObject.transform;
+
+                gridPoints[index] = point;
+                point.index = index;
+                point.transform.parent = gridGameObject.transform;
+
+                isBlocked[index] = point.PointIsOverBlockedSurface();
+
+                if (isBlocked[index])
+                {
+                    point.GetComponent<SpriteRenderer>().enabled = true;
+                }
+
             }
         }
     }
@@ -61,5 +72,10 @@ public class PathfindingGrid : MonoBehaviour
         {
             Destroy(gridGameObject);
         }
+    }
+
+    public bool[] GetIsBlocked()
+    {
+        return isBlocked;
     }
 }

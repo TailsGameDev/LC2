@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding
+public class Pathfinding : MonoBehaviour
 {
-    PathfindingGrid pathfindingGrid;
+    [SerializeField] PathfindingGrid pathfindingGrid;
 
-    int width, height;
+    [SerializeField] int width, height;
 
     GridGraph gridGraph;
 
@@ -14,12 +14,8 @@ public class Pathfinding
 
     List<int> path;
 
-    public Pathfinding(GameObject owner, int width, int height)
+    private void Start()
     {
-        this.width = width; this.height = height;
-
-        pathfindingGrid = owner.AddComponent<PathfindingGrid>();
-
         SetUpGridGraph();
 
         algorithm = new Dijkstra();
@@ -52,7 +48,7 @@ public class Pathfinding
 
         gridGraph.SetDestinationNode(targetI, targetJ);
 
-        List<int> path = algorithm.FindPath(gridGraph);
+        List<int> path = algorithm.FindPath(gridGraph, pathfindingGrid.GetIsBlocked());
 
         return IntToPositionList(path);
     }

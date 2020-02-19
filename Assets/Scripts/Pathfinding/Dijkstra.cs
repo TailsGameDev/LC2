@@ -7,29 +7,27 @@ public class Dijkstra
 {
     protected int infinity = 999999999;
 
-    public List<int> FindPath(GridGraph gridGraph)
+    public List<int> FindPath(GridGraph gridGraph, bool[] isBlocked)
     {
         int size = gridGraph.GetNodesQuantity();
         float[] D = new float[size];
         int[] A = new int[size];
-        bool[] C = new bool[size];
 
         for (int v = 0; v < gridGraph.GetNodesQuantity(); v++)
         {
             D[v] = infinity;
-            C[v] = false;
         }
 
         D[ gridGraph.GetInitialNode() ] = 0;
 
-        while (ContainsFalse(C))
+        while (ContainsFalse(isBlocked))
         {
-            int u = ArgMin(D, C);
-            C[u] = true;
+            int u = ArgMin(D, isBlocked);
+            isBlocked[u] = true;
 
             foreach (int v in gridGraph.GetNeighbors(u))
             {
-                if (!C[v])
+                if (!isBlocked[v])
                 {
                     if (D[v] > D[u] + gridGraph.GetWeight(u, v))
                     {
@@ -54,6 +52,20 @@ public class Dijkstra
             }
         }
         return false;
+    }
+
+
+    protected int CountTrue(bool[] boolArray)
+    {
+        int qty = 0;
+        for (int i = 0; i < boolArray.Length; i++)
+        {
+            if (boolArray[i])
+            {
+                qty++;
+            }
+        }
+        return qty;
     }
 
 
