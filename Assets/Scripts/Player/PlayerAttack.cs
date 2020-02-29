@@ -4,15 +4,8 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    [SerializeField] Collider2D attackCollider;
+    [SerializeField] PlayerDamager playerDamager;
     [SerializeField] Transform centerOfRotation;
-
-    [SerializeField] float attackDuration;
-
-    private void Start()
-    {
-        attackCollider.gameObject.SetActive(false);
-    }
 
     void RotateAttackCollider(KeyCode lastMovementKeyPressed)
     {
@@ -41,23 +34,8 @@ public class PlayerAttack : MonoBehaviour
     {
         RotateAttackCollider(lastMovementKeyPressed);
 
-        CancelCurrentAttacks();
-
-        StartCoroutine(ActivateAndDeactivateCollider());
+        playerDamager.ActivateColliderDuringAttackAnimation();
     }
 
-    void CancelCurrentAttacks()
-    {
-        attackCollider.gameObject.SetActive(false);
-        StopAllCoroutines();
-    }
-
-    IEnumerator ActivateAndDeactivateCollider()
-    {
-        yield return new WaitForSeconds(Time.deltaTime * 6);
-        attackCollider.gameObject.SetActive(true);
-        yield return new WaitForSeconds(Time.deltaTime * 6);
-        attackCollider.gameObject.SetActive(false);
-    }
 }
  

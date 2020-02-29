@@ -11,7 +11,7 @@ public class GridPoint : MonoBehaviour
     {
         Collider2D[] overlappedColliders = new Collider2D[3];
         ContactFilter2D contactFilter = new ContactFilter2D();
-        contactFilter.SetLayerMask(LayerMask.GetMask("Default"));
+        contactFilter.SetLayerMask(LayerMask.GetMask("Obstacles"));
         int numberOfCollidersIntersect = col.OverlapCollider(contactFilter, overlappedColliders);
 
         return numberOfCollidersIntersect > 0;

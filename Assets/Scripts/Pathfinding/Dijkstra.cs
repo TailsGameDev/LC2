@@ -71,8 +71,16 @@ public class Dijkstra
         while (ContainsFalse(Visited))
         {
             int nearestUnvisited = GetNearestUnvisitedVertex(Distances, Visited);
-            Visited[nearestUnvisited] = true;
-
+            // TODO: understand the cause of the exception then treat it propeperly
+            try
+            {
+                Visited[nearestUnvisited] = true;
+            } catch (Exception e)
+            {
+                Debug.LogError("[Dijkstra] Index "+nearestUnvisited+
+                    " out of bounds at Dijkstra algorythm.\n" + e.Message);
+                Visited[Visited.Length-1] = true;
+            }
             foreach (int neighbor in gridGraph.GetNeighbors(nearestUnvisited))
             {
                 UpdateDistanceAndAncestor(nearestUnvisited, neighbor);
