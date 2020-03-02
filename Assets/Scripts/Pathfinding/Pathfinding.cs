@@ -21,18 +21,18 @@ public class Pathfinding : MonoBehaviour
         SetUpGridGraph();
     }
 
-    void SetUpGridGraph()
+    private void SetUpGridGraph()
     {
         gridGraph = new GridGraph(width, height);
         gridGraph.SetInitialNode(GetInitialI(), GetInitialJ());
     }
 
-    int GetInitialI()
+    private int GetInitialI()
     {
         return height / 2;
     }
 
-    int GetInitialJ()
+    private int GetInitialJ()
     {
         return width / 2;
     }
@@ -48,14 +48,14 @@ public class Pathfinding : MonoBehaviour
         return IntToPositionList(path);
     }
 
-    PathfindingGrid ResetPathfindingGrid()
+    private PathfindingGrid ResetPathfindingGrid()
     {
         pathfindingGrid.Clear();
         pathfindingGrid.Create(width, height);
         return pathfindingGrid;
     }
 
-    GridGraph SetDestinationInGridGraph(Transform target)
+    private GridGraph SetDestinationInGridGraph(Transform target)
     {
         Vector3 deltaPosition = CalculateDeltaPosition(target);
 
@@ -67,14 +67,14 @@ public class Pathfinding : MonoBehaviour
         return gridGraph;
     }
 
-    Vector3 CalculateDeltaPosition(Transform target)
+    private Vector3 CalculateDeltaPosition(Transform target)
     {
         Vector3 actualDeltaPos = target.transform.position - pathfindingGrid.transform.position;
         Vector3 insideBoundsDeltaPos = ClampDeltaPos(actualDeltaPos);
         return insideBoundsDeltaPos;
     }
 
-    Vector3 ClampDeltaPos(Vector3 deltaPos)
+    private Vector3 ClampDeltaPos(Vector3 deltaPos)
     {
         Vector3 clamped = Vector3.zero;
 
@@ -85,13 +85,13 @@ public class Pathfinding : MonoBehaviour
     }
 
     //like a matrix, J grows from left to right, and I grows from top to bottom
-    void CalculateTargetIJGridIndexes(Vector3 deltaPosition, out int targetI, out int targetJ)
+    private void CalculateTargetIJGridIndexes(Vector3 deltaPosition, out int targetI, out int targetJ)
     {
         targetJ = GetInitialJ() + (int)deltaPosition.x;
         targetI = GetInitialI() - (int)deltaPosition.y;
     }
 
-    List<Vector3> IntToPositionList(List<int> intList)
+    private List<Vector3> IntToPositionList(List<int> intList)
     {
         List<Vector3> positionsList = new List<Vector3>();
 

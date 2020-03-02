@@ -22,7 +22,7 @@ public class PlayerAttack : MonoBehaviour
             case KeyCode.D: zRotation = 90;
                 break;
             default:
-                Debug.LogError("last movement key pressed was not a movement key! wtf");
+                Debug.LogError("[PlayerAttacks] last movement key pressed was not a movement key! wtf", this);
                 zRotation = 45;
                 break;
         }

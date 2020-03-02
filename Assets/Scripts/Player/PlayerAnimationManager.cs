@@ -40,4 +40,9 @@ public class PlayerAnimationManager : MonoBehaviour
             animator.SetTrigger("pressedAttackKey");
         }
     }
+
+    public void InformDamaged()
+    {
+        animator.SetTrigger("damaged");
+    }
 }
